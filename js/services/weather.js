@@ -1,5 +1,15 @@
+import { BASE_API, API_KEY } from "../constants.js"
 
-export async function getCurrentWeather() {
-    const response = await fetch('http://api.meteored.mx/index.php?api_lang=mx&localidad=22322&affiliate_id=4c5g1ws9nbdn')
-    debugger
+
+export async function getCurrentWeather(lat , lon) {
+    const response = await fetch(`${BASE_API}weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`)
+    if (!response.ok) return {
+        isError: true,
+        data:null
+    }
+    const data = await response.json()
+    return {
+        isError: false,
+        data,
+    }
 }

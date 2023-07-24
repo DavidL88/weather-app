@@ -44,9 +44,17 @@ function setBackground($el, conditionCode, solarStatus) {
     $el.style.backgroundImage = `url(./images/${solarStatus}-${weatherType}${size}.jpg)`
 }
 
+function showCurrentWeather($app, $loader) {
+    $app.hidden = false
+    $loader.hidden = true
+} 
+
 function configCurrentWeather(weather) {
+    const $app = document.querySelector('#app')
+    const $loading = document.querySelector('#loading')
 
     // loader
+    showCurrentWeather($app, $loading)
     // date
     const $currentWeatherDate = document.querySelector('#current-weather-date')
     setCurrentDate($currentWeatherDate)
@@ -62,7 +70,6 @@ function configCurrentWeather(weather) {
     // background
     const sunriseTime = new Date (weather.sys.sunrise * 1000)
     const sunsetTime = new Date (weather.sys.sunset * 1000)
-    const $app = document.querySelector('#app')
     const conditionCode = String(weather.weather[0].id).charAt(0)
     setBackground($app, conditionCode, solarStatus(sunriseTime, sunsetTime))
 
@@ -72,7 +79,7 @@ export default async function currentWeather() {
     // GEO // API // weather // Config
     const { lat, lon, isError } = await getLatLon()
     if (isError) return console.log('Fallo al ubicarte, enciende tu GPS')
-    console.log(lat,lon)
+    // console.log(lat,lon)
     // const latlon = getCurrentPosition()
     // getCurrentPosition()
     // .then((data) => {
@@ -81,7 +88,8 @@ export default async function currentWeather() {
     // .catch((message) => {
     //     console.log(message)
     // })
-    getCurrentWeather()
+    const { isError: currentWeatherError, data: weather } = await getCurrentWeather(lat, lon)
+    if (currentWeatherError) return console.log('oh! ha ocurrido un error trayendo los datos del clima')
     configCurrentWeather(weather)
     // console.log(weather)
 }
