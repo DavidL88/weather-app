@@ -1,6 +1,8 @@
 import weather from '../data/current-weather.js'
 import { formatDate, formatTemp } from './utils/format-data.js'
 import { weatherConditionsCodes } from './constants.js'
+import { getLatLon } from './geolocation.js'
+import { getCurrentWeather } from './services/weather.js'
 // weather.name
 weatherConditionsCodes
     String(weather.weather[0].id).charAt(0)
@@ -33,7 +35,13 @@ function solarStatus(sunriseTime, sunsetTime) {
 
 function setBackground($el, conditionCode, solarStatus) {
     const weatherType = weatherConditionsCodes[conditionCode]
-    $el.style.backgroundImage = `url(./images/${solarStatus}-${weatherType}.jpg)`
+    const size = window.matchMedia('(-webkit-min-device-pixel-ratio: 2)').matches ? '@2x' : ''
+    // let size = ''
+    // if window.matchMedia('(-webkit-min-device-pixel-ratio: 2)') {
+    //     size = '@2x'
+    // }
+    // true ? '@2x' : ''
+    $el.style.backgroundImage = `url(./images/${solarStatus}-${weatherType}${size}.jpg)`
 }
 
 function configCurrentWeather(weather) {
@@ -60,8 +68,20 @@ function configCurrentWeather(weather) {
 
 }
 
-export default function currentWeather() {
+export default async function currentWeather() {
     // GEO // API // weather // Config
+    const { lat, lon, isError } = await getLatLon()
+    if (isError) return console.log('Fallo al ubicarte, enciende tu GPS')
+    console.log(lat,lon)
+    // const latlon = getCurrentPosition()
+    // getCurrentPosition()
+    // .then((data) => {
+    //     console.log('siwe', data)
+    // })
+    // .catch((message) => {
+    //     console.log(message)
+    // })
+    getCurrentWeather()
     configCurrentWeather(weather)
-    console.log(weather)
+    // console.log(weather)
 }
