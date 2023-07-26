@@ -6,6 +6,6 @@ export const weatherConditionsCodes = {
     3: 'cloudy',
     5: 'rainy',
     6: 'drizzle',
-    7: 'cloudy',
-    8: 'clean',
+    8: 'cloudy',
+    7: 'clean',
 }
